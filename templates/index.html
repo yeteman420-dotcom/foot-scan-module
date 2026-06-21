@@ -168,6 +168,7 @@
             overflow: hidden;
             position: relative;
             gap: 12px;
+            margin-bottom: 24px;
         }
         #previewImg {
             max-width: 100%;
@@ -187,6 +188,79 @@
         .status-success { color: #16a34a; }
         .status-error { color: #dc2626; }
         .status-loading { color: #2563eb; }
+
+        /* Premium Brand Recommendation Results Card */
+        .results-card {
+            width: 100%;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: left;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            display: none;
+        }
+        .results-header {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .results-header span {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .metric-label {
+            color: #64748b;
+            font-weight: 500;
+        }
+        .metric-value {
+            color: #0f172a;
+            font-weight: 700;
+        }
+        .recommendation-box {
+            background-color: #f0fdf4;
+            border: 1px dashed #bbf7d0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .rec-title {
+            color: #166534;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .rec-value {
+            color: #14532d;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .rec-notes {
+            color: #166534;
+            font-size: 13px;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -225,6 +299,26 @@
             <img id="previewImg" alt="Foot Scan Preview">
             <div id="statusText"></div>
         </div>
+
+        <div class="results-card" id="resultsCard">
+            <div class="results-header">
+                ModToes™ Analysis Report <span id="resSide">Right</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Alignment Metric (HVA):</span>
+                <span class="metric-value" id="resAngle">18.4°</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Structural Condition:</span>
+                <span class="metric-value" id="resSeverity">Moderate</span>
+            </div>
+            
+            <div class="recommendation-box">
+                <div class="rec-title">🎯 Prescribed ModToes™ Configuration</div>
+                <div class="rec-value" id="resRec">Medium Progressive Spacer</div>
+                <div class="rec-notes" id="resNotes">Optimized alignment profile for regular therapeutic deployment.</div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -253,7 +347,6 @@
         function handleFile(inputElement) {
             const file = inputElement.files[0];
             if (file) {
-                // 1. Show image preview instantly
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = document.getElementById('previewImg');
@@ -265,15 +358,17 @@
                 }
                 reader.readAsDataURL(file);
 
-                // 2. Automatically upload to backend
                 uploadToServer(file);
             }
         }
 
         function uploadToServer(file) {
             const statusDiv = document.getElementById('statusText');
+            const card = document.getElementById('resultsCard');
+            
+            card.style.display = 'none'; // Clear previous calculations
             statusDiv.className = 'status-loading';
-            statusDiv.innerText = '⚡ Processing scan components...';
+            statusDiv.innerText = '⚡ Runing ModToes™ structural analysis...';
 
             const formData = new FormData();
             formData.append('foot_image', file);
@@ -287,16 +382,25 @@
             .then(data => {
                 if (data.status === 'success') {
                     statusDiv.className = 'status-success';
-                    statusDiv.innerText = `✅ Success: Received ${data.side} foot scan template!`;
+                    statusDiv.innerText = '✅ Analysis complete!';
+                    
+                    // Populate and transition the Premium Card data views
+                    document.getElementById('resSide').innerText = data.side;
+                    document.getElementById('resAngle').innerText = data.angle;
+                    document.getElementById('resSeverity').innerText = data.severity;
+                    document.getElementById('resRec').innerText = data.recommendation;
+                    document.getElementById('resNotes').innerText = data.notes;
+                    
+                    card.style.display = 'block';
                 } else {
                     statusDiv.className = 'status-error';
-                    statusDiv.innerText = '❌ Processing failed.';
+                    statusDiv.innerText = '❌ Analysis failed.';
                 }
             })
             .catch(error => {
                 console.error('Upload error:', error);
                 statusDiv.className = 'status-error';
-                statusDiv.innerText = '❌ Server network error.';
+                statusDiv.innerText = '❌ Server analytical computation error.';
             });
         }
 

@@ -3,42 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foot Scan Module</title>
+    <title>ModToes™ Scanner | SquachAcers</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        /* Top Navigation Header */
+        header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background-color: #2563eb;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+        .brand-subtitle {
+            color: #2563eb;
+        }
+
+        /* Main Content Container */
+        .main-container {
+            max-width: 480px;
+            width: 100%;
+            padding: 40px 24px;
+            text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .container {
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-            margin-top: 50px;
+
+        /* Feature Badge */
+        .badge {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #dbeafe;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 28px;
         }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 15px 30px;
+
+        /* Headings & Text */
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #0f172a;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        h1 span {
+            color: #2563eb;
+            display: block;
+        }
+        p {
             font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        /* Action Buttons Row */
+        .button-row {
+            display: flex;
+            gap: 12px;
             width: 100%;
-            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            flex: 1;
+            padding: 14px 16px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .btn-primary {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #475569;
+            border-color: #cbd5e1;
+        }
+
+        /* Foot Selector Row */
+        .selector-row {
+            display: flex;
+            background-color: #f1f5f9;
+            padding: 4px;
+            border-radius: 30px;
+            width: 100%;
+            margin-bottom: 32px;
+            border: 1px solid #e2e8f0;
+        }
+        .selector-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 26px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .selector-btn.active {
+            background-color: #0f172a;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Upload Area Blueprint Box */
+        .blueprint-box {
+            width: 100%;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 40px 20px;
+            background-color: #ffffff;
+            color: #94a3b8;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Foot Scan Module</h1>
-        <p>Ready to initialize scan.</p>
-        <button id="scanBtn">Start Scan</button>
+
+    <header>
+        <div class="brand-container">
+            <div class="brand-logo">M</div>
+            <div class="brand-name">SquachAcers <span class="brand-subtitle">Scanner</span></div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="badge">
+            🛡️ Bunion Detection & Spacer Analysis
+        </div>
+
+        <h1>Discover your perfect <span>modular spacer.</span></h1>
+        
+        <p>Upload or photograph your foot. Our system analyzes toe alignment parameters to recommend your custom ModToes™ configurations.</p>
+
+        <div class="button-row">
+            <button class="btn btn-primary" id="uploadBtn">📤 Upload Photo</button>
+            <button class="btn btn-secondary" id="takePhotoBtn">📷 Take Photo</button>
+        </div>
+
+        <div class="selector-row">
+            <button class="selector-btn" id="leftFootBtn" onclick="setFoot('left')">🦶 Left Foot</button>
+            <button class="selector-btn active" id="rightFootBtn" onclick="setFoot('right')">Right Foot 🦶</button>
+        </div>
+
+        <div class="blueprint-box">
+            Your foot scan preview will display here
+        </div>
     </div>
+
+    <script>
+        function setFoot(side) {
+            document.getElementById('leftFootBtn').classList.remove('active');
+            document.getElementById('rightFootBtn').classList.remove('active');
+            
+            if(side === 'left') {
+                document.getElementById('leftFootBtn').classList.add('active');
+            } else {
+                document.getElementById('rightFootBtn').classList.add('active');
+            }
+        }
+    </script>
 </body>
 </html>

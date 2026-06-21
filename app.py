@@ -19,7 +19,7 @@ def upload_scan():
         return jsonify({'status': 'error', 'message': 'Empty filename submission'}), 400
 
     # Simulate Orthopedic Measurement Analysis (Hallux Valgus Angle calculation)
-    # Generates a realistic diagnostic angle between 12 and 24 degrees
+    # Generates a realistic diagnostic angle between 14.5 and 23.8 degrees
     hva_angle = round(random.uniform(14.5, 23.8), 1)
     
     if hva_angle < 16.0:

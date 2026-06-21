@@ -19,7 +19,6 @@
             align-items: center;
             min-height: 100vh;
         }
-        /* Top Navigation Header */
         header {
             width: 100%;
             background-color: #ffffff;
@@ -55,8 +54,6 @@
         .brand-subtitle {
             color: #2563eb;
         }
-
-        /* Main Content Container */
         .main-container {
             max-width: 480px;
             width: 100%;
@@ -66,8 +63,6 @@
             flex-direction: column;
             align-items: center;
         }
-
-        /* Feature Badge */
         .badge {
             background-color: #eff6ff;
             color: #1d4ed8;
@@ -81,8 +76,6 @@
             gap: 6px;
             margin-bottom: 28px;
         }
-
-        /* Headings & Text */
         h1 {
             font-size: 36px;
             font-weight: 800;
@@ -101,8 +94,6 @@
             line-height: 1.6;
             margin-bottom: 32px;
         }
-
-        /* Action Buttons Row */
         .button-row {
             display: flex;
             gap: 12px;
@@ -132,8 +123,6 @@
             color: #475569;
             border-color: #cbd5e1;
         }
-
-        /* Foot Selector Row */
         .selector-row {
             display: flex;
             background-color: #f1f5f9;
@@ -163,16 +152,30 @@
             color: #ffffff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        /* Upload Area Blueprint Box */
         .blueprint-box {
             width: 100%;
             border: 2px dashed #cbd5e1;
             border-radius: 16px;
-            padding: 40px 20px;
+            padding: 20px;
             background-color: #ffffff;
             color: #94a3b8;
             font-size: 14px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        #previewImg {
+            max-width: 100%;
+            max-height: 280px;
+            border-radius: 12px;
+            display: none;
+            object-fit: contain;
+        }
+        .hidden-input {
+            display: none;
         }
     </style>
 </head>
@@ -194,23 +197,30 @@
         
         <p>Upload or photograph your foot. Our system analyzes toe alignment parameters to recommend your custom ModToes™ configurations.</p>
 
+        <input type="file" id="fileUpload" class="hidden-input" accept="image/*">
+        <input type="file" id="cameraCapture" class="hidden-input" accept="image/*" capture="environment">
+
         <div class="button-row">
             <button class="btn btn-primary" id="uploadBtn">📤 Upload Photo</button>
             <button class="btn btn-secondary" id="takePhotoBtn">📷 Take Photo</button>
         </div>
 
         <div class="selector-row">
-            <button class="selector-btn" id="leftFootBtn" onclick="setFoot('left')">🦶 Left Foot</button>
-            <button class="selector-btn active" id="rightFootBtn" onclick="setFoot('right')">Right Foot 🦶</button>
+            <button class="selector-btn" id="leftFootBtn" onclick="setFoot('left')">导 Left Foot</button>
+            <button class="selector-btn active" id="rightFootBtn" onclick="setFoot('right')">Right Foot 导</button>
         </div>
 
-        <div class="blueprint-box">
-            Your foot scan preview will display here
+        <div class="blueprint-box" id="dropzone">
+            <span id="placeholderText">Your foot scan preview will display here</span>
+            <img id="previewImg" alt="Foot Scan Preview">
         </div>
     </div>
 
     <script>
+        let selectedFoot = 'right';
+
         function setFoot(side) {
+            selectedFoot = side;
             document.getElementById('leftFootBtn').classList.remove('active');
             document.getElementById('rightFootBtn').classList.remove('active');
             
@@ -220,6 +230,35 @@
                 document.getElementById('rightFootBtn').classList.add('active');
             }
         }
+
+        // Link custom design buttons to native inputs
+        document.getElementById('uploadBtn').addEventListener('click', () => {
+            document.getElementById('fileUpload').click();
+        });
+
+        document.getElementById('takePhotoBtn').addEventListener('click', () => {
+            document.getElementById('cameraCapture').click();
+        });
+
+        // Monitor image source changes and render previews
+        function handleFile(inputElement) {
+            const file = inputElement.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('previewImg');
+                    const text = document.getElementById('placeholderText');
+                    
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    text.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.getElementById('fileUpload').addEventListener('change', function() { handleFile(this); });
+        document.getElementById('cameraCapture').addEventListener('change', function() { handleFile(this); });
     </script>
 </body>
 </html>

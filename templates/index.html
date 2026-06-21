@@ -162,10 +162,12 @@
             font-size: 14px;
             min-height: 250px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             position: relative;
+            gap: 12px;
         }
         #previewImg {
             max-width: 100%;
@@ -177,6 +179,14 @@
         .hidden-input {
             display: none;
         }
+        #statusText {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .status-success { color: #16a34a; }
+        .status-error { color: #dc2626; }
+        .status-loading { color: #2563eb; }
     </style>
 </head>
 <body>
@@ -197,7 +207,6 @@
         
         <p>Upload or photograph your foot. Our system analyzes toe alignment parameters to recommend your custom ModToes™ configurations.</p>
 
-        <!-- Hidden Native Inputs to trigger mobile OS actions -->
         <input type="file" id="fileUpload" class="hidden-input" accept="image/*">
         <input type="file" id="cameraCapture" class="hidden-input" accept="image/*" capture="environment">
 
@@ -214,6 +223,7 @@
         <div class="blueprint-box" id="dropzone">
             <span id="placeholderText">Your foot scan preview will display here</span>
             <img id="previewImg" alt="Foot Scan Preview">
+            <div id="statusText"></div>
         </div>
     </div>
 
@@ -232,7 +242,6 @@
             }
         }
 
-        // Link custom design buttons to native inputs
         document.getElementById('uploadBtn').addEventListener('click', () => {
             document.getElementById('fileUpload').click();
         });
@@ -241,10 +250,10 @@
             document.getElementById('cameraCapture').click();
         });
 
-        // Monitor image source changes and render previews
         function handleFile(inputElement) {
             const file = inputElement.files[0];
             if (file) {
+                // 1. Show image preview instantly
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = document.getElementById('previewImg');
@@ -255,7 +264,40 @@
                     text.style.display = 'none';
                 }
                 reader.readAsDataURL(file);
+
+                // 2. Automatically upload to backend
+                uploadToServer(file);
             }
+        }
+
+        function uploadToServer(file) {
+            const statusDiv = document.getElementById('statusText');
+            statusDiv.className = 'status-loading';
+            statusDiv.innerText = '⚡ Processing scan components...';
+
+            const formData = new FormData();
+            formData.append('foot_image', file);
+            formData.append('foot_side', selectedFoot);
+
+            fetch('/upload-scan', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    statusDiv.className = 'status-success';
+                    statusDiv.innerText = `✅ Success: Received ${data.side} foot scan template!`;
+                } else {
+                    statusDiv.className = 'status-error';
+                    statusDiv.innerText = '❌ Processing failed.';
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                statusDiv.className = 'status-error';
+                statusDiv.innerText = '❌ Server network error.';
+            });
         }
 
         document.getElementById('fileUpload').addEventListener('change', function() { handleFile(this); });

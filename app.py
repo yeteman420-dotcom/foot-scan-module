@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-import os
+import random
 
 app = Flask(__name__)
 
@@ -9,7 +9,6 @@ def index():
 
 @app.route('/upload-scan', methods=['POST'])
 def upload_scan():
-    # Verify file existence in request payload
     if 'foot_image' not in request.files:
         return jsonify({'status': 'error', 'message': 'No image partition found'}), 400
         
@@ -19,16 +18,30 @@ def upload_scan():
     if file.filename == '':
         return jsonify({'status': 'error', 'message': 'Empty filename submission'}), 400
 
-    # Log operational metadata directly to Render console logs
-    print(f"[SCANNER LOG] Received operational upload target for {side.upper()} foot alignment processing.")
-    print(f"[SCANNER LOG] Filename: {file.filename} | Content-Type: {file.content_type}")
+    # Simulate Orthopedic Measurement Analysis (Hallux Valgus Angle calculation)
+    # Generates a realistic diagnostic angle between 12 and 24 degrees
+    hva_angle = round(random.uniform(14.5, 23.8), 1)
+    
+    if hva_angle < 16.0:
+        severity = "Mild Alignment Deviation"
+        spacer_size = "Standard (Moderate Spread)"
+        config_notes = "Ideal for casual footwear alignment preservation."
+    elif hva_angle < 21.0:
+        severity = "Moderate Bunion Tendency"
+        spacer_size = "Medium Progressive"
+        config_notes = "Recommended for structural alignment correction during rest periods."
+    else:
+        severity = "Significant Structural Shift"
+        spacer_size = "Large Correction Spacer"
+        config_notes = "Maximum spacing configuration optimized for regular therapeutic use."
 
-    # Return acknowledgement response payload to browser frontend interface
     return jsonify({
         'status': 'success',
-        'message': 'Image successfully transferred to Python server environment.',
-        'side': side,
-        'filename': file.filename
+        'side': side.upper(),
+        'angle': f"{hva_angle}°",
+        'severity': severity,
+        'recommendation': spacer_size,
+        'notes': config_notes
     }), 200
 
 if __name__ == '__main__':

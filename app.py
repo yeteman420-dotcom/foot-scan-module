@@ -7,12 +7,29 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/api/scan', methods=['POST'])
-def process_scan():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image data'}), 400
-    return jsonify({'status': 'success', 'message': 'Scan registered successfully'})
+@app.route('/upload-scan', methods=['POST'])
+def upload_scan():
+    # Verify file existence in request payload
+    if 'foot_image' not in request.files:
+        return jsonify({'status': 'error', 'message': 'No image partition found'}), 400
+        
+    file = request.files['foot_image']
+    side = request.form.get('foot_side', 'right')
+    
+    if file.filename == '':
+        return jsonify({'status': 'error', 'message': 'Empty filename submission'}), 400
+
+    # Log operational metadata directly to Render console logs
+    print(f"[SCANNER LOG] Received operational upload target for {side.upper()} foot alignment processing.")
+    print(f"[SCANNER LOG] Filename: {file.filename} | Content-Type: {file.content_type}")
+
+    # Return acknowledgement response payload to browser frontend interface
+    return jsonify({
+        'status': 'success',
+        'message': 'Image successfully transferred to Python server environment.',
+        'side': side,
+        'filename': file.filename
+    }), 200
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
